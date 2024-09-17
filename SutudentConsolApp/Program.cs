@@ -22,13 +22,15 @@ namespace SutudentConsolApp
         }
         static void Main(string[] args)
         {
+            Console.InputEncoding = Encoding.UTF8;
             Console.OutputEncoding = Encoding.UTF8;
             Console.WriteLine("Starting Proqram!");
             Console.WriteLine("Welcome!");
             bool isCoun = true;
             while (isCoun)
             {
-                Console.WriteLine("-----------------------------------");
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.WriteLine("----------------Seçimlər-------------------");
                 Console.WriteLine("1.Tələbə əlavə et.");
                 Console.WriteLine("2.Tələbənin məlumatlarını yenilə.");
                 Console.WriteLine("3.Tələbə sil.");
@@ -36,8 +38,8 @@ namespace SutudentConsolApp
                 Console.WriteLine("5.Tələbəni ID-yə görə göstər.");
                 Console.WriteLine("0.Proqramı bağla.");
                 Console.WriteLine("-----------------------------------");
-
-                if(int.TryParse(Console.ReadLine(),out int value))
+                Console.Write("Seçim et: ");
+                if (int.TryParse(Console.ReadLine(), out int value))
                 {
                     switch (value)
                     {
@@ -48,6 +50,7 @@ namespace SutudentConsolApp
                             break;
                         case 1:
                             Console.Clear();
+                        YeniTelebe:
                             Console.WriteLine("----------Yeni Tələbə----------");
                             Student newStud = new();
                             Console.Write("Adı: ");
@@ -55,7 +58,17 @@ namespace SutudentConsolApp
                             Console.Write("Soyad: ");
                             newStud.LastName = Console.ReadLine();
                             var result = manager.Add(newStud);
+                            if (!result.Success)
+                            {
+                                Console.Clear();
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine(result.Message);
+                                goto YeniTelebe;
+                            }
+                            else
+                                Console.ForegroundColor = ConsoleColor.DarkGreen;
                             Console.WriteLine(result.Message);
+                            Console.ForegroundColor = ConsoleColor.Blue;
                             break;
                         case 2:
                             Console.Clear();
@@ -78,7 +91,7 @@ namespace SutudentConsolApp
                         case 4:
                             Console.Clear();
                             var getAllResult = manager.GetAll();
-                            if(getAllResult.Success)
+                            if (getAllResult.Success)
                             {
                                 foreach (var item in getAllResult.Data)
                                 {
@@ -95,8 +108,8 @@ namespace SutudentConsolApp
                             Console.Clear();
                             Console.WriteLine("----------Axtarılan Tələbə----------");
                             int byId = int.Parse(Console.ReadLine());
-                            var getByIdResult =  manager.GetById(byId);
-                            if(getByIdResult.Success)
+                            var getByIdResult = manager.GetById(byId);
+                            if (getByIdResult.Success)
                             {
                                 var data = getByIdResult.Data;
                                 Console.WriteLine($"ID: {data.ID}");
